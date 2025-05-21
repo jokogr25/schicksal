@@ -10,7 +10,10 @@ import Browser
 import Html exposing (Html, button, div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
+import Process exposing (sleep)
 import Random
+import Task exposing (Task)
+import Time exposing (..)
 
 
 
@@ -46,6 +49,7 @@ init _ =
 type Msg
     = Destiny
     | Restart
+    | TimeElapsed
     | GotDestinied Int
 
 
@@ -53,10 +57,13 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Destiny ->
-            ( { model | randomBit = Nothing }, Random.generate GotDestinied (Random.int 0 1) )
+            ( { model | randomBit = Just -1 }, wait 2500 )
 
         Restart ->
             init ()
+
+        TimeElapsed ->
+            ( model, Random.generate GotDestinied (Random.int 0 1) )
 
         GotDestinied randomBit ->
             ( { model | randomBit = Just randomBit }, Cmd.none )
@@ -87,6 +94,16 @@ view model =
                         ]
                         [ text "JA" ]
 
+                else if destiny == -1 then
+                    div
+                        [ Html.Attributes.class "spinner-border"
+                        , Html.Attributes.attribute "role" "status"
+                        ]
+                        [ Html.span
+                            [ Html.Attributes.class "sr-only" ]
+                            []
+                        ]
+
                 else
                     div
                         [ Html.Attributes.class "card-body v-100 text-center bg-success text-align-center d-flex justify-content-center align-items-center"
@@ -94,3 +111,9 @@ view model =
                         ]
                         [ text "NEIN" ]
         ]
+
+
+wait : Int -> Cmd Msg
+wait ms =
+    Process.sleep (ms |> toFloat)
+        |> Task.perform (\_ -> TimeElapsed)

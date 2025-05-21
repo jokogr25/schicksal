@@ -10,9 +10,9 @@ import Browser
 import Html exposing (Html, button, div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
-import Process exposing (sleep)
+import Process
 import Random
-import Task exposing (Task)
+import Task
 import Time exposing (..)
 
 

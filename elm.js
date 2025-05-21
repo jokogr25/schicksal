@@ -5514,7 +5514,7 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('card-body v-100 text-center bg-warning d-flex justify-content-center align-items-center'),
+								$elm$html$Html$Attributes$class('card-body v-100 text-center bg-success d-flex justify-content-center align-items-center'),
 								$elm$html$Html$Events$onClick($author$project$Main$Restart)
 							]),
 						_List_fromArray(
@@ -5549,7 +5549,7 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('card-body v-100 text-center bg-success text-align-center d-flex justify-content-center align-items-center'),
+								$elm$html$Html$Attributes$class('card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center'),
 								$elm$html$Html$Events$onClick($author$project$Main$Restart)
 							]),
 						_List_fromArray(

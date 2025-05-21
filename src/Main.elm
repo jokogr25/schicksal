@@ -81,7 +81,7 @@ view model =
         [ case model.randomBit of
             Nothing ->
                 button
-                    [ Html.Attributes.class "h-100 btn btn-danger"
+                    [ Html.Attributes.class "h-100 btn btn-danger fs-1"
                     , onClick Destiny
                     ]
                     [ text "JA ODER NEIN" ]
@@ -89,7 +89,7 @@ view model =
             Just destiny ->
                 if destiny == 0 then
                     div
-                        [ Html.Attributes.class "card-body v-100 text-center bg-success d-flex justify-content-center align-items-center"
+                        [ Html.Attributes.class "card-body v-100 text-center bg-success d-flex justify-content-center align-items-center display-5"
                         , onClick Restart
                         ]
                         [ text "JA" ]
@@ -108,7 +108,7 @@ view model =
 
                 else
                     div
-                        [ Html.Attributes.class "card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center"
+                        [ Html.Attributes.class "card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center display-5"
                         , onClick Restart
                         ]
                         [ text "NEIN" ]

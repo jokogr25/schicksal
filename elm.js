@@ -5403,6 +5403,16 @@ var $elm$random$Random$int = F2(
 				}
 			});
 	});
+var $author$project$Main$TimeElapsed = {$: 'TimeElapsed'};
+var $elm$core$Process$sleep = _Process_sleep;
+var $author$project$Main$wait = function (ms) {
+	return A2(
+		$elm$core$Task$perform,
+		function (_v0) {
+			return $author$project$Main$TimeElapsed;
+		},
+		$elm$core$Process$sleep(ms));
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -5410,13 +5420,19 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{randomBit: $elm$core$Maybe$Nothing}),
+						{
+							randomBit: $elm$core$Maybe$Just(-1)
+						}),
+					$author$project$Main$wait(2500));
+			case 'Restart':
+				return $author$project$Main$init(_Utils_Tuple0);
+			case 'TimeElapsed':
+				return _Utils_Tuple2(
+					model,
 					A2(
 						$elm$random$Random$generate,
 						$author$project$Main$GotDestinied,
 						A2($elm$random$Random$int, 0, 1)));
-			case 'Restart':
-				return $author$project$Main$init(_Utils_Tuple0);
 			default:
 				var randomBit = msg.a;
 				return _Utils_Tuple2(
@@ -5430,6 +5446,14 @@ var $author$project$Main$update = F2(
 	});
 var $author$project$Main$Destiny = {$: 'Destiny'};
 var $author$project$Main$Restart = {$: 'Restart'};
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -5458,6 +5482,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$view = function (model) {
@@ -5495,6 +5520,22 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('JA')
+							])) : (_Utils_eq(destiny, -1) ? A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('spinner-border'),
+								A2($elm$html$Html$Attributes$attribute, 'role', 'status')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$span,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('sr-only')
+									]),
+								_List_Nil)
 							])) : A2(
 						$elm$html$Html$div,
 						_List_fromArray(
@@ -5505,7 +5546,7 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('NEIN')
-							]));
+							])));
 				}
 			}()
 			]));

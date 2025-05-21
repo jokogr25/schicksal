@@ -2,3 +2,10 @@
 elm-stuff
 # elm-repl generated files
 repl-temp-*
+
+src/index.js
+src/index.html
+
+.parcel-cache/
+node_modules/
+dist/

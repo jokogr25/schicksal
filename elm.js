@@ -5423,7 +5423,7 @@ var $author$project$Main$update = F2(
 						{
 							randomBit: $elm$core$Maybe$Just(-1)
 						}),
-					$author$project$Main$wait(2500));
+					$author$project$Main$wait(1500));
 			case 'Restart':
 				return $author$project$Main$init(_Utils_Tuple0);
 			case 'TimeElapsed':

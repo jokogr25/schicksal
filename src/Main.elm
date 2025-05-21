@@ -95,13 +95,15 @@ view model =
                         [ text "JA" ]
 
                 else if destiny == -1 then
-                    div
-                        [ Html.Attributes.class "spinner-border"
-                        , Html.Attributes.attribute "role" "status"
-                        ]
-                        [ Html.span
-                            [ Html.Attributes.class "sr-only" ]
-                            []
+                    div [ Html.Attributes.class "d-flex justify-content-center align-items-center vh-100" ]
+                        [ div
+                            [ Html.Attributes.class "spinner-grow m-0"
+                            , Html.Attributes.attribute "role" "status"
+                            ]
+                            [ Html.span
+                                [ Html.Attributes.class "sr-only" ]
+                                []
+                            ]
                         ]
 
                 else

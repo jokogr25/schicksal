@@ -57,7 +57,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Destiny ->
-            ( { model | randomBit = Just -1 }, wait 2500 )
+            ( { model | randomBit = Just -1 }, wait 1500 )
 
         Restart ->
             init ()

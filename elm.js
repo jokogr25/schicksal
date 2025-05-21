@@ -5524,18 +5524,27 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('spinner-border'),
-								A2($elm$html$Html$Attributes$attribute, 'role', 'status')
+								$elm$html$Html$Attributes$class('d-flex justify-content-center align-items-center vh-100')
 							]),
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$span,
+								$elm$html$Html$div,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('sr-only')
+										$elm$html$Html$Attributes$class('spinner-grow m-0'),
+										A2($elm$html$Html$Attributes$attribute, 'role', 'status')
 									]),
-								_List_Nil)
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$span,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('sr-only')
+											]),
+										_List_Nil)
+									]))
 							])) : A2(
 						$elm$html$Html$div,
 						_List_fromArray(

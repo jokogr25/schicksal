@@ -8,7 +8,7 @@ module Main exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (button, div, text)
+import Html exposing (div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
 import Process

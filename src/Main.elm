@@ -8,7 +8,7 @@ module Main exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, button, div, text)
+import Html exposing (button, div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
 import Process
@@ -39,10 +39,10 @@ main =
 -- MODEL
 
 
-type alias Model =
-    { randomBit : Maybe Int
-    , query : Maybe String
-    }
+type Model
+    = Start (Maybe String)
+    | Loading
+    | Finished Int
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -51,12 +51,7 @@ init _ url _ =
         queryValue =
             Parser.parse questionRoute url
     in
-    ( { randomBit = Nothing
-      , query =
-            Maybe.andThen
-                (\q -> q)
-                queryValue
-      }
+    ( Start (Maybe.andThen (\q -> q) queryValue)
     , Cmd.none
     )
 
@@ -80,23 +75,18 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Destiny waitTime ->
-            ( { model | randomBit = Just -1 }, wait waitTime )
+            ( model, wait waitTime )
 
         RandomTime ->
             ( model, Random.generate RandomTimeGenerated (Random.int 0 5000) )
 
         RandomTimeGenerated randomTime ->
-            ( { model
-                | randomBit = Just -1
-              }
+            ( Loading
             , Task.perform identity (Task.succeed (Destiny randomTime))
             )
 
         Restart ->
-            ( { model
-                | query = Nothing
-                , randomBit = Nothing
-              }
+            ( Start Nothing
             , Cmd.none
             )
 
@@ -104,13 +94,10 @@ update msg model =
             ( model, Random.generate GotDestinied (Random.int 0 1) )
 
         GotDestinied randomBit ->
-            ( { model | randomBit = Just randomBit }, Cmd.none )
+            ( Finished randomBit, Cmd.none )
 
         UrlChanged url ->
-            ( { model
-                | query =
-                    Maybe.andThen (\q -> q) (Parser.parse questionRoute url)
-              }
+            ( Start (Maybe.andThen (\q -> q) (Parser.parse questionRoute url))
             , Cmd.none
             )
 
@@ -141,40 +128,46 @@ view model =
         [ div
             [ Html.Attributes.class "card vh-100"
             ]
-            [ case model.randomBit of
-                Nothing ->
-                    button
-                        [ Html.Attributes.class "h-100 btn btn-danger fs-1"
+            [ case model of
+                Start x ->
+                    div
+                        [ Html.Attributes.class
+                            "card-body h-100 text-center bg-warning d-flex justify-content-center align-items-center display-5"
                         , onClick RandomTime
                         ]
-                        [ text (Maybe.withDefault "JA ODER NEIN" model.query) ]
+                        [ text (Maybe.withDefault "JA ODER NEIN" x)
+                        ]
 
-                Just destiny ->
-                    if destiny == 0 then
-                        div
-                            [ Html.Attributes.class "card-body v-100 text-center bg-success d-flex justify-content-center align-items-center display-5"
-                            , onClick Restart
+                Loading ->
+                    div
+                        [ Html.Attributes.class "card-body h-100 text-center bg-light d-flex justify-content-center align-items-center display-5"
+                        , onClick RandomTime
+                        ]
+                        [ div
+                            [ Html.Attributes.class "spinner-grow m-0"
+                            , Html.Attributes.attribute "role" "status"
+                            , Html.Attributes.attribute "style" "width: 7rem; height: 7rem;"
                             ]
-                            [ text "JA" ]
-
-                    else if destiny == -1 then
-                        div [ Html.Attributes.class "d-flex justify-content-center align-items-center vh-100" ]
-                            [ div
-                                [ Html.Attributes.class "spinner-grow m-0"
-                                , Html.Attributes.attribute "role" "status"
-                                ]
-                                [ Html.span
-                                    [ Html.Attributes.class "sr-only" ]
-                                    []
-                                ]
+                            [ Html.span
+                                [ Html.Attributes.class "sr-only" ]
+                                []
                             ]
+                        ]
 
-                    else
+                Finished randomBit ->
+                    if randomBit == 0 then
                         div
-                            [ Html.Attributes.class "card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center display-5"
+                            [ Html.Attributes.class "card-body h-100 text-center bg-danger d-flex justify-content-center align-items-center display-5"
                             , onClick Restart
                             ]
                             [ text "NEIN" ]
+
+                    else
+                        div
+                            [ Html.Attributes.class "card-body h-100 text-center bg-success d-flex justify-content-center align-items-center display-5"
+                            , onClick Restart
+                            ]
+                            [ text "JA" ]
             ]
         ]
     }

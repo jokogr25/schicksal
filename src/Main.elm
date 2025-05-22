@@ -7,6 +7,7 @@ module Main exposing (..)
 --
 
 import Browser
+import Browser.Navigation as Nav
 import Html exposing (Html, button, div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
@@ -14,6 +15,9 @@ import Process
 import Random
 import Task
 import Time exposing (..)
+import Url exposing (Url)
+import Url.Parser as Parser exposing ((</>), (<?>), s)
+import Url.Parser.Query as Query
 
 
 
@@ -21,11 +25,13 @@ import Time exposing (..)
 
 
 main =
-    Browser.element
+    Browser.application
         { init = init
-        , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , update = update
+        , subscriptions = always Sub.none
+        , onUrlRequest = \_ -> NoOp
+        , onUrlChange = UrlChanged
         }
 
 
@@ -34,12 +40,25 @@ main =
 
 
 type alias Model =
-    { randomBit : Maybe Int }
+    { randomBit : Maybe Int
+    , query : Maybe String
+    }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( { randomBit = Nothing }, Cmd.none )
+init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init _ url _ =
+    let
+        queryValue =
+            Parser.parse questionRoute url
+    in
+    ( { randomBit = Nothing
+      , query =
+            Maybe.andThen
+                (\q -> q)
+                queryValue
+      }
+    , Cmd.none
+    )
 
 
 
@@ -47,12 +66,14 @@ init _ =
 
 
 type Msg
-    = Destiny Int
+    = UrlChanged Url
+    | Destiny Int
     | RandomTime
     | RandomTimeGenerated Int
     | Restart
     | TimeElapsed
     | GotDestinied Int
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -65,10 +86,19 @@ update msg model =
             ( model, Random.generate RandomTimeGenerated (Random.int 0 5000) )
 
         RandomTimeGenerated randomTime ->
-            ( { model | randomBit = Just -1 }, Task.perform identity (Task.succeed (Destiny randomTime)) )
+            ( { model
+                | randomBit = Just -1
+              }
+            , Task.perform identity (Task.succeed (Destiny randomTime))
+            )
 
         Restart ->
-            init ()
+            ( { model
+                | query = Nothing
+                , randomBit = Nothing
+              }
+            , Cmd.none
+            )
 
         TimeElapsed ->
             ( model, Random.generate GotDestinied (Random.int 0 1) )
@@ -76,51 +106,78 @@ update msg model =
         GotDestinied randomBit ->
             ( { model | randomBit = Just randomBit }, Cmd.none )
 
+        UrlChanged url ->
+            ( { model
+                | query =
+                    Maybe.andThen (\q -> q) (Parser.parse questionRoute url)
+              }
+            , Cmd.none
+            )
+
+        NoOp ->
+            ( model, Cmd.none )
+
+
+
+-- ROUTES
+
+
+questionRoute : Parser.Parser (Maybe String -> a) a
+questionRoute =
+    Parser.map identity
+        (s "question"
+            <?> Query.string "q"
+        )
+
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
-    div
-        [ Html.Attributes.class "card vh-100"
-        ]
-        [ case model.randomBit of
-            Nothing ->
-                button
-                    [ Html.Attributes.class "h-100 btn btn-danger fs-1"
-                    , onClick RandomTime
-                    ]
-                    [ text "JA ODER NEIN" ]
-
-            Just destiny ->
-                if destiny == 0 then
-                    div
-                        [ Html.Attributes.class "card-body v-100 text-center bg-success d-flex justify-content-center align-items-center display-5"
-                        , onClick Restart
+    { title = "Schicksal"
+    , body =
+        [ div
+            [ Html.Attributes.class "card vh-100"
+            ]
+            [ case model.randomBit of
+                Nothing ->
+                    button
+                        [ Html.Attributes.class "h-100 btn btn-danger fs-1"
+                        , onClick RandomTime
                         ]
-                        [ text "JA" ]
+                        [ text (Maybe.withDefault "JA ODER NEIN" model.query) ]
 
-                else if destiny == -1 then
-                    div [ Html.Attributes.class "d-flex justify-content-center align-items-center vh-100" ]
-                        [ div
-                            [ Html.Attributes.class "spinner-grow m-0"
-                            , Html.Attributes.attribute "role" "status"
+                Just destiny ->
+                    if destiny == 0 then
+                        div
+                            [ Html.Attributes.class "card-body v-100 text-center bg-success d-flex justify-content-center align-items-center display-5"
+                            , onClick Restart
                             ]
-                            [ Html.span
-                                [ Html.Attributes.class "sr-only" ]
-                                []
-                            ]
-                        ]
+                            [ text "JA" ]
 
-                else
-                    div
-                        [ Html.Attributes.class "card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center display-5"
-                        , onClick Restart
-                        ]
-                        [ text "NEIN" ]
+                    else if destiny == -1 then
+                        div [ Html.Attributes.class "d-flex justify-content-center align-items-center vh-100" ]
+                            [ div
+                                [ Html.Attributes.class "spinner-grow m-0"
+                                , Html.Attributes.attribute "role" "status"
+                                ]
+                                [ Html.span
+                                    [ Html.Attributes.class "sr-only" ]
+                                    []
+                                ]
+                            ]
+
+                    else
+                        div
+                            [ Html.Attributes.class "card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center display-5"
+                            , onClick Restart
+                            ]
+                            [ text "NEIN" ]
+            ]
         ]
+    }
 
 
 wait : Int -> Cmd Msg

@@ -5267,6 +5267,9 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
+var $author$project$Main$Start = function (a) {
+	return {$: 'Start', a: a};
+};
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (maybeValue.$ === 'Just') {
@@ -6077,15 +6080,13 @@ var $author$project$Main$init = F3(
 	function (_v0, url, _v1) {
 		var queryValue = A2($elm$url$Url$Parser$parse, $author$project$Main$questionRoute, url);
 		return _Utils_Tuple2(
-			{
-				query: A2(
+			$author$project$Main$Start(
+				A2(
 					$elm$core$Maybe$andThen,
 					function (q) {
 						return q;
 					},
-					queryValue),
-				randomBit: $elm$core$Maybe$Nothing
-			},
+					queryValue)),
 			$elm$core$Platform$Cmd$none);
 	});
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6093,9 +6094,13 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$Destiny = function (a) {
 	return {$: 'Destiny', a: a};
 };
+var $author$project$Main$Finished = function (a) {
+	return {$: 'Finished', a: a};
+};
 var $author$project$Main$GotDestinied = function (a) {
 	return {$: 'GotDestinied', a: a};
 };
+var $author$project$Main$Loading = {$: 'Loading'};
 var $author$project$Main$RandomTimeGenerated = function (a) {
 	return {$: 'RandomTimeGenerated', a: a};
 };
@@ -6264,11 +6269,7 @@ var $author$project$Main$update = F2(
 			case 'Destiny':
 				var waitTime = msg.a;
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							randomBit: $elm$core$Maybe$Just(-1)
-						}),
+					model,
 					$author$project$Main$wait(waitTime));
 			case 'RandomTime':
 				return _Utils_Tuple2(
@@ -6280,11 +6281,7 @@ var $author$project$Main$update = F2(
 			case 'RandomTimeGenerated':
 				var randomTime = msg.a;
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							randomBit: $elm$core$Maybe$Just(-1)
-						}),
+					$author$project$Main$Loading,
 					A2(
 						$elm$core$Task$perform,
 						$elm$core$Basics$identity,
@@ -6292,9 +6289,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$Destiny(randomTime))));
 			case 'Restart':
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{query: $elm$core$Maybe$Nothing, randomBit: $elm$core$Maybe$Nothing}),
+					$author$project$Main$Start($elm$core$Maybe$Nothing),
 					$elm$core$Platform$Cmd$none);
 			case 'TimeElapsed':
 				return _Utils_Tuple2(
@@ -6306,25 +6301,18 @@ var $author$project$Main$update = F2(
 			case 'GotDestinied':
 				var randomBit = msg.a;
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							randomBit: $elm$core$Maybe$Just(randomBit)
-						}),
+					$author$project$Main$Finished(randomBit),
 					$elm$core$Platform$Cmd$none);
 			case 'UrlChanged':
 				var url = msg.a;
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							query: A2(
-								$elm$core$Maybe$andThen,
-								function (q) {
-									return q;
-								},
-								A2($elm$url$Url$Parser$parse, $author$project$Main$questionRoute, url))
-						}),
+					$author$project$Main$Start(
+						A2(
+							$elm$core$Maybe$andThen,
+							function (q) {
+								return q;
+							},
+							A2($elm$url$Url$Parser$parse, $author$project$Main$questionRoute, url))),
 					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -6340,7 +6328,6 @@ var $elm$virtual_dom$VirtualDom$attribute = F2(
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6384,68 +6371,73 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						function () {
-						var _v0 = model.randomBit;
-						if (_v0.$ === 'Nothing') {
-							return A2(
-								$elm$html$Html$button,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('h-100 btn btn-danger fs-1'),
-										$elm$html$Html$Events$onClick($author$project$Main$RandomTime)
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text(
-										A2($elm$core$Maybe$withDefault, 'JA ODER NEIN', model.query))
-									]));
-						} else {
-							var destiny = _v0.a;
-							return (!destiny) ? A2(
-								$elm$html$Html$div,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('card-body v-100 text-center bg-success d-flex justify-content-center align-items-center display-5'),
-										$elm$html$Html$Events$onClick($author$project$Main$Restart)
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('JA')
-									])) : (_Utils_eq(destiny, -1) ? A2(
-								$elm$html$Html$div,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('d-flex justify-content-center align-items-center vh-100')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$div,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$class('spinner-grow m-0'),
-												A2($elm$html$Html$Attributes$attribute, 'role', 'status')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$span,
-												_List_fromArray(
-													[
-														$elm$html$Html$Attributes$class('sr-only')
-													]),
-												_List_Nil)
-											]))
-									])) : A2(
-								$elm$html$Html$div,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('card-body v-100 text-center bg-warning text-align-center d-flex justify-content-center align-items-center display-5'),
-										$elm$html$Html$Events$onClick($author$project$Main$Restart)
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('NEIN')
-									])));
+						switch (model.$) {
+							case 'Start':
+								var x = model.a;
+								return A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('card-body h-100 text-center bg-warning d-flex justify-content-center align-items-center display-5'),
+											$elm$html$Html$Events$onClick($author$project$Main$RandomTime)
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(
+											A2($elm$core$Maybe$withDefault, 'JA ODER NEIN', x))
+										]));
+							case 'Loading':
+								return A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('card-body h-100 text-center bg-light d-flex justify-content-center align-items-center display-5'),
+											$elm$html$Html$Events$onClick($author$project$Main$RandomTime)
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('spinner-grow m-0'),
+													A2($elm$html$Html$Attributes$attribute, 'role', 'status'),
+													A2($elm$html$Html$Attributes$attribute, 'style', 'width: 7rem; height: 7rem;')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$span,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$class('sr-only')
+														]),
+													_List_Nil)
+												]))
+										]));
+							default:
+								var randomBit = model.a;
+								return (!randomBit) ? A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('card-body h-100 text-center bg-danger d-flex justify-content-center align-items-center display-5'),
+											$elm$html$Html$Events$onClick($author$project$Main$Restart)
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('NEIN')
+										])) : A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('card-body h-100 text-center bg-success d-flex justify-content-center align-items-center display-5'),
+											$elm$html$Html$Events$onClick($author$project$Main$Restart)
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('JA')
+										]));
 						}
 					}()
 					]))

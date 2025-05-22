@@ -1,11 +1,5 @@
 module Main exposing (..)
 
--- Press buttons to increment and decrement a counter.
---
--- Read how it works:
---   https://guide.elm-lang.org/architecture/buttons.html
---
-
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (div, text)
@@ -41,6 +35,7 @@ main =
 
 type Model
     = Start (Maybe String)
+    | AskPage
     | Loading
     | Finished Int
 
@@ -63,6 +58,7 @@ init _ url _ =
 type Msg
     = UrlChanged Url
     | Destiny Int
+    | Ask
     | RandomTime
     | RandomTimeGenerated Int
     | Restart
@@ -101,6 +97,9 @@ update msg model =
             , Cmd.none
             )
 
+        Ask ->
+            ( AskPage, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 
@@ -126,16 +125,50 @@ view model =
     { title = "Schicksal"
     , body =
         [ div
-            [ Html.Attributes.class "card vh-100"
+            [ Html.Attributes.class "vh-100"
             ]
             [ case model of
-                Start x ->
+                Start maybeQuestion ->
+                    case maybeQuestion of
+                        Nothing ->
+                            div
+                                [ Html.Attributes.class "row vh-100" ]
+                                [ div
+                                    [ Html.Attributes.class "col-6 h-100 text-center bg-danger d-flex justify-content-center align-items-center display-5"
+                                    , onClick RandomTime
+                                    ]
+                                    [ text "JA ODER NEIN?!" ]
+                                , div
+                                    [ Html.Attributes.class "col-6 justify-content-center align-items-center text-center d-flex h-100 bg-secondary"
+                                    , onClick Ask
+                                    ]
+                                    [ text "FRAGE STELLEN" ]
+                                ]
+
+                        Just question ->
+                            div
+                                []
+                                [ div
+                                    [ Html.Attributes.class "container"
+                                    , onClick RandomTime
+                                    ]
+                                    [ text question
+                                    ]
+                                ]
+
+                AskPage ->
                     div
-                        [ Html.Attributes.class
-                            "card-body h-100 text-center bg-warning d-flex justify-content-center align-items-center display-5"
-                        , onClick RandomTime
-                        ]
-                        [ text (Maybe.withDefault "JA ODER NEIN" x)
+                        [ Html.Attributes.class "g-2" ]
+                        [ Html.input
+                            [ Html.Attributes.class "form-control"
+                            , Html.Attributes.placeholder "Was möchtest du wissen?"
+                            , Html.Attributes.type_ "text"
+                            , Html.Attributes.value ""
+                            ]
+                            []
+                        , Html.button
+                            [ Html.Attributes.class "btn btn-dark w-100" ]
+                            [ text "Frage stellen" ]
                         ]
 
                 Loading ->

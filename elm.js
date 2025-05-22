@@ -6309,9 +6309,7 @@ var $author$project$Main$update = F2(
 					$author$project$Main$Start(
 						A2(
 							$elm$core$Maybe$andThen,
-							function (q) {
-								return q;
-							},
+							$elm$core$Basics$identity,
 							A2($elm$url$Url$Parser$parse, $author$project$Main$questionRoute, url))),
 					$elm$core$Platform$Cmd$none);
 			default:

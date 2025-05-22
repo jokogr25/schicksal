@@ -97,7 +97,7 @@ update msg model =
             ( Finished randomBit, Cmd.none )
 
         UrlChanged url ->
-            ( Start (Maybe.andThen (\q -> q) (Parser.parse questionRoute url))
+            ( Start (Maybe.andThen identity (Parser.parse questionRoute url))
             , Cmd.none
             )
 

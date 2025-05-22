@@ -47,7 +47,9 @@ init _ =
 
 
 type Msg
-    = Destiny
+    = Destiny Int
+    | RandomTime
+    | RandomTimeGenerated Int
     | Restart
     | TimeElapsed
     | GotDestinied Int
@@ -56,8 +58,14 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Destiny ->
-            ( { model | randomBit = Just -1 }, wait 1500 )
+        Destiny waitTime ->
+            ( { model | randomBit = Just -1 }, wait waitTime )
+
+        RandomTime ->
+            ( model, Random.generate RandomTimeGenerated (Random.int 0 5000) )
+
+        RandomTimeGenerated randomTime ->
+            ( { model | randomBit = Just -1 }, Task.perform identity (Task.succeed (Destiny randomTime)) )
 
         Restart ->
             init ()
@@ -82,7 +90,7 @@ view model =
             Nothing ->
                 button
                     [ Html.Attributes.class "h-100 btn btn-danger fs-1"
-                    , onClick Destiny
+                    , onClick RandomTime
                     ]
                     [ text "JA ODER NEIN" ]
 

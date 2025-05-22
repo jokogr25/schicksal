@@ -5251,8 +5251,14 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Main$Destiny = function (a) {
+	return {$: 'Destiny', a: a};
+};
 var $author$project$Main$GotDestinied = function (a) {
 	return {$: 'GotDestinied', a: a};
+};
+var $author$project$Main$RandomTimeGenerated = function (a) {
+	return {$: 'RandomTimeGenerated', a: a};
 };
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
@@ -5417,13 +5423,34 @@ var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'Destiny':
+				var waitTime = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							randomBit: $elm$core$Maybe$Just(-1)
 						}),
-					$author$project$Main$wait(1500));
+					$author$project$Main$wait(waitTime));
+			case 'RandomTime':
+				return _Utils_Tuple2(
+					model,
+					A2(
+						$elm$random$Random$generate,
+						$author$project$Main$RandomTimeGenerated,
+						A2($elm$random$Random$int, 0, 5000)));
+			case 'RandomTimeGenerated':
+				var randomTime = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							randomBit: $elm$core$Maybe$Just(-1)
+						}),
+					A2(
+						$elm$core$Task$perform,
+						$elm$core$Basics$identity,
+						$elm$core$Task$succeed(
+							$author$project$Main$Destiny(randomTime))));
 			case 'Restart':
 				return $author$project$Main$init(_Utils_Tuple0);
 			case 'TimeElapsed':
@@ -5444,7 +5471,7 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$Destiny = {$: 'Destiny'};
+var $author$project$Main$RandomTime = {$: 'RandomTime'};
 var $author$project$Main$Restart = {$: 'Restart'};
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
@@ -5502,7 +5529,7 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Attributes$class('h-100 btn btn-danger fs-1'),
-								$elm$html$Html$Events$onClick($author$project$Main$Destiny)
+								$elm$html$Html$Events$onClick($author$project$Main$RandomTime)
 							]),
 						_List_fromArray(
 							[

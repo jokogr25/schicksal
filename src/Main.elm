@@ -7,6 +7,7 @@ import Html.Attributes
 import Html.Events exposing (onClick)
 import Process
 import Random
+import Serialize as S
 import Task
 import Time exposing (..)
 import Url exposing (Url)
@@ -35,7 +36,7 @@ main =
 
 type Model
     = Start (Maybe String)
-    | AskPage
+    | AskPage (Maybe String)
     | Loading
     | Finished Int
 
@@ -59,6 +60,7 @@ type Msg
     = UrlChanged Url
     | Destiny Int
     | Ask
+    | AskInput String
     | RandomTime
     | RandomTimeGenerated Int
     | Restart
@@ -98,7 +100,10 @@ update msg model =
             )
 
         Ask ->
-            ( AskPage, Cmd.none )
+            ( AskPage Nothing, Cmd.none )
+
+        AskInput question ->
+            ( AskPage (Just question), Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -146,29 +151,51 @@ view model =
                                 ]
 
                         Just question ->
+                            let
+                                x =
+                                    S.decodeFromString S.string question
+                            in
                             div
-                                []
+                                [ Html.Attributes.class "row vh-100" ]
                                 [ div
-                                    [ Html.Attributes.class "container"
+                                    [ Html.Attributes.class "col-12 h-100 text-center bg-danger d-flex justify-content-center align-items-center display-5"
                                     , onClick RandomTime
                                     ]
-                                    [ text question
+                                    [ text
+                                        (case x of
+                                            Ok q ->
+                                                "JA ODER NEIN?! Frage: " ++ q
+
+                                            Err _ ->
+                                                "JA ODER NEIN?! Frage: (Ungültige Frage)"
+                                        )
                                     ]
                                 ]
 
-                AskPage ->
+                AskPage maybeQuestion ->
                     div
-                        [ Html.Attributes.class "g-2" ]
+                        [ Html.Attributes.class "m-2" ]
                         [ Html.input
                             [ Html.Attributes.class "form-control"
                             , Html.Attributes.placeholder "Was möchtest du wissen?"
                             , Html.Attributes.type_ "text"
-                            , Html.Attributes.value ""
+                            , Html.Events.onInput (\s -> AskInput s)
                             ]
                             []
-                        , Html.button
-                            [ Html.Attributes.class "btn btn-dark w-100" ]
-                            [ text "Frage stellen" ]
+                        , case maybeQuestion of
+                            Nothing ->
+                                text "Bitte stelle eine Frage."
+
+                            Just question ->
+                                let
+                                    encoded =
+                                        S.encodeToString S.string question
+                                in
+                                div
+                                    [ Html.Attributes.class "bg-success m-2"
+                                    , Html.Attributes.value encoded
+                                    ]
+                                    [ text ("http://localhost:1234/question?q=" ++ encoded) ]
                         ]
 
                 Loading ->

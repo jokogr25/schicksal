@@ -19,6 +19,7 @@ import Url.Parser.Query as Query
 -- MAIN
 
 
+main : Program () Model Msg
 main =
     Browser.application
         { init = init

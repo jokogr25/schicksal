@@ -164,10 +164,10 @@ view model =
                                     [ text
                                         (case x of
                                             Ok q ->
-                                                "JA ODER NEIN?! Frage: " ++ q
+                                                q
 
                                             Err _ ->
-                                                "JA ODER NEIN?! Frage: (Ungültige Frage)"
+                                                "JA ODER NEIN?!"
                                         )
                                     ]
                                 ]

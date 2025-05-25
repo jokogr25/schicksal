@@ -144,10 +144,10 @@ view model =
                                     ]
                                     [ text "JA ODER NEIN?!" ]
                                 , div
-                                    [ Html.Attributes.class "col-6 justify-content-center align-items-center text-center d-flex h-100 bg-secondary"
+                                    [ Html.Attributes.class "col-6 justify-content-center align-items-center text-center d-flex h-100 bg-secondary display-5"
                                     , onClick Ask
                                     ]
-                                    [ text "FRAGE STELLEN" ]
+                                    [ text "EINE FRAGE BEANTWORTEN LASSEN" ]
                                 ]
 
                         Just question ->
@@ -174,28 +174,42 @@ view model =
 
                 AskPage maybeQuestion ->
                     div
-                        [ Html.Attributes.class "m-2" ]
-                        [ Html.input
-                            [ Html.Attributes.class "form-control"
-                            , Html.Attributes.placeholder "Was möchtest du wissen?"
-                            , Html.Attributes.type_ "text"
-                            , Html.Events.onInput (\s -> AskInput s)
-                            ]
-                            []
-                        , case maybeQuestion of
-                            Nothing ->
-                                text "Bitte stelle eine Frage."
-
-                            Just question ->
-                                let
-                                    encoded =
-                                        S.encodeToString S.string question
-                                in
-                                div
-                                    [ Html.Attributes.class "bg-success m-2"
-                                    , Html.Attributes.value encoded
+                        [ Html.Attributes.class "vh-100" ]
+                        [ div
+                            [ Html.Attributes.class "row g-0" ]
+                            [ div
+                                [ Html.Attributes.class "col-12 bg-primary"
+                                , Html.Attributes.style "height" "50vh"
+                                ]
+                                [ Html.input
+                                    [ Html.Attributes.class "form-control w-75 mx-auto my-3"
+                                    , Html.Attributes.placeholder "Was möchtest du wissen?"
+                                    , Html.Attributes.type_ "text"
+                                    , Html.Events.onInput (\s -> AskInput s)
                                     ]
-                                    [ text ("https://schicksal.jokogr.de/question?q=" ++ encoded) ]
+                                    []
+                                ]
+                            , case maybeQuestion of
+                                Nothing ->
+                                    div
+                                        [ Html.Attributes.class "col-12 text-center"
+                                        , Html.Attributes.style "height" "50vh"
+                                        ]
+                                        [ text "Bitte gib eine Frage ein" ]
+
+                                Just question ->
+                                    let
+                                        url =
+                                            "https://schicksal.jokogr.de/question?q=" ++ S.encodeToString S.string question
+                                    in
+                                    Html.a
+                                        [ Html.Attributes.href url
+                                        , Html.Attributes.class "bg-white col-12 text-center"
+                                        , Html.Attributes.style "height" "50vh"
+                                        , Html.Attributes.value url
+                                        ]
+                                        [ text url ]
+                            ]
                         ]
 
                 Loading ->

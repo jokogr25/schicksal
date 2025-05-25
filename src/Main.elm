@@ -195,7 +195,7 @@ view model =
                                     [ Html.Attributes.class "bg-success m-2"
                                     , Html.Attributes.value encoded
                                     ]
-                                    [ text ("http://localhost:1234/question?q=" ++ encoded) ]
+                                    [ text ("https://schicksal.jokogr.de/question?q=" ++ encoded) ]
                         ]
 
                 Loading ->

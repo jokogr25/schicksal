@@ -7720,7 +7720,7 @@ var $author$project$Main$view = function (model) {
 														]),
 													_List_fromArray(
 														[
-															$elm$html$Html$text('http://localhost:1234/question?q=' + encoded)
+															$elm$html$Html$text('https://schicksal.jokogr.de/question?q=' + encoded)
 														]));
 											}
 										}()

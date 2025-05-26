@@ -7734,7 +7734,7 @@ var $author$project$Main$view = function (model) {
 															$elm$html$Html$div,
 															_List_fromArray(
 																[
-																	$elm$html$Html$Attributes$class('input-group w-75 mx-auto my-3 align-middle')
+																	$elm$html$Html$Attributes$class('input-group input-group-lg w-75 mx-auto my-3 align-middle')
 																]),
 															_List_fromArray(
 																[

@@ -192,7 +192,7 @@ view model =
                                 , Html.Attributes.style "height" "100vh"
                                 ]
                                 [ div
-                                    [ Html.Attributes.class "input-group w-75 mx-auto my-3 align-middle" ]
+                                    [ Html.Attributes.class "input-group input-group-lg w-75 mx-auto my-3 align-middle" ]
                                     [ Html.input
                                         [ Html.Attributes.class "form-control"
                                         , Html.Attributes.placeholder "Was möchtest du wissen?"

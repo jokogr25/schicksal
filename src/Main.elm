@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
@@ -32,6 +32,13 @@ main =
 
 
 
+-- PORTS
+
+
+port copyToClipboard : String -> Cmd msg
+
+
+
 -- MODEL
 
 
@@ -48,9 +55,7 @@ init _ url _ =
         queryValue =
             Parser.parse questionRoute url
     in
-    ( Start (Maybe.andThen (\q -> q) queryValue)
-    , Cmd.none
-    )
+    ( Start (Maybe.andThen (\q -> q) queryValue), Cmd.none )
 
 
 
@@ -62,6 +67,7 @@ type Msg
     | Destiny Int
     | Ask
     | AskInput String
+    | CopyToClipboard String
     | RandomTime
     | RandomTimeGenerated Int
     | Restart
@@ -105,6 +111,9 @@ update msg model =
 
         AskInput question ->
             ( AskPage (Just question), Cmd.none )
+
+        CopyToClipboard question ->
+            ( model, copyToClipboard question )
 
         NoOp ->
             ( model, Cmd.none )
@@ -179,37 +188,36 @@ view model =
                         [ div
                             [ Html.Attributes.class "row g-0" ]
                             [ div
-                                [ Html.Attributes.class "col-12 bg-primary"
-                                , Html.Attributes.style "height" "50vh"
+                                [ Html.Attributes.class "col-12 bg-secondary d-flex align-items-center"
+                                , Html.Attributes.style "height" "100vh"
                                 ]
-                                [ Html.input
-                                    [ Html.Attributes.class "form-control w-75 mx-auto my-3"
-                                    , Html.Attributes.placeholder "Was möchtest du wissen?"
-                                    , Html.Attributes.type_ "text"
-                                    , Html.Events.onInput (\s -> AskInput s)
-                                    ]
-                                    []
-                                ]
-                            , case maybeQuestion of
-                                Nothing ->
-                                    div
-                                        [ Html.Attributes.class "col-12 text-center"
-                                        , Html.Attributes.style "height" "50vh"
+                                [ div
+                                    [ Html.Attributes.class "input-group w-75 mx-auto my-3 align-middle" ]
+                                    [ Html.input
+                                        [ Html.Attributes.class "form-control"
+                                        , Html.Attributes.placeholder "Was möchtest du wissen?"
+                                        , Html.Attributes.type_ "text"
+                                        , Html.Events.onInput (\s -> AskInput s)
+                                        , Html.Attributes.attribute "aria-describedby" "basic-addon1"
                                         ]
-                                        [ text "Bitte gib eine Frage ein" ]
+                                        []
+                                    , Html.button
+                                        [ Html.Attributes.class "input-group-text"
+                                        , Html.Attributes.id "basic-addon1"
+                                        , case maybeQuestion of
+                                            Nothing ->
+                                                Html.Attributes.disabled True
 
-                                Just question ->
-                                    let
-                                        url =
-                                            "https://schicksal.jokogr.de/question?q=" ++ S.encodeToString S.string question
-                                    in
-                                    Html.a
-                                        [ Html.Attributes.href url
-                                        , Html.Attributes.class "bg-white col-12 text-center"
-                                        , Html.Attributes.style "height" "50vh"
-                                        , Html.Attributes.value url
+                                            Just question ->
+                                                let
+                                                    url =
+                                                        "https://schicksal.jokogr.de/question?q=" ++ S.encodeToString S.string question
+                                                in
+                                                onClick (CopyToClipboard url)
                                         ]
-                                        [ text url ]
+                                        [ text "Link kopieren" ]
+                                    ]
+                                ]
                             ]
                         ]
 

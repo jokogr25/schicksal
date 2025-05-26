@@ -20,6 +20,11 @@
     var app = Elm.Main.init({
         node: document.getElementById("elm-app"),
     });
+    app.ports.copyToClipboard.subscribe(function (text) {
+        navigator.clipboard.writeText(text).catch(function (err) {
+            console.error("Could not copy text: ", err);
+        });
+    });
 </script>
 
 <script

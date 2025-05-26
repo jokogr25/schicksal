@@ -6386,6 +6386,8 @@ var $author$project$Main$Loading = {$: 'Loading'};
 var $author$project$Main$RandomTimeGenerated = function (a) {
 	return {$: 'RandomTimeGenerated', a: a};
 };
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$Main$copyToClipboard = _Platform_outgoingPort('copyToClipboard', $elm$json$Json$Encode$string);
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
 };
@@ -6604,6 +6606,11 @@ var $author$project$Main$update = F2(
 					$author$project$Main$AskPage(
 						$elm$core$Maybe$Just(question)),
 					$elm$core$Platform$Cmd$none);
+			case 'CopyToClipboard':
+				var question = msg.a;
+				return _Utils_Tuple2(
+					model,
+					$author$project$Main$copyToClipboard(question));
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
@@ -6612,9 +6619,11 @@ var $author$project$Main$Ask = {$: 'Ask'};
 var $author$project$Main$AskInput = function (a) {
 	return {$: 'AskInput', a: a};
 };
+var $author$project$Main$CopyToClipboard = function (a) {
+	return {$: 'CopyToClipboard', a: a};
+};
 var $author$project$Main$RandomTime = {$: 'RandomTime'};
 var $author$project$Main$Restart = {$: 'Restart'};
-var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
 		return A2(
@@ -6623,7 +6632,7 @@ var $elm$virtual_dom$VirtualDom$attribute = F2(
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -7114,6 +7123,15 @@ var $MartinSStewart$elm_serialize$Serialize$decodeFromString = F2(
 			return $elm$core$Result$Err($MartinSStewart$elm_serialize$Serialize$DataCorrupted);
 		}
 	});
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $MartinSStewart$elm_serialize$Serialize$getBytesEncoderHelper = function (_v0) {
 	var m = _v0.a;
@@ -7493,12 +7511,7 @@ var $MartinSStewart$elm_serialize$Serialize$encodeToString = function (codec) {
 		$MartinSStewart$elm_serialize$Serialize$encodeToBytes(codec),
 		$MartinSStewart$elm_serialize$Serialize$replaceBase64Chars);
 };
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -7610,7 +7623,6 @@ var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Main$view = function (model) {
 	return {
 		body: _List_fromArray(
@@ -7713,56 +7725,56 @@ var $author$project$Main$view = function (model) {
 													$elm$html$Html$div,
 													_List_fromArray(
 														[
-															$elm$html$Html$Attributes$class('col-12 bg-primary'),
-															A2($elm$html$Html$Attributes$style, 'height', '50vh')
+															$elm$html$Html$Attributes$class('col-12 bg-secondary d-flex align-items-center'),
+															A2($elm$html$Html$Attributes$style, 'height', '100vh')
 														]),
 													_List_fromArray(
 														[
 															A2(
-															$elm$html$Html$input,
-															_List_fromArray(
-																[
-																	$elm$html$Html$Attributes$class('form-control w-75 mx-auto my-3'),
-																	$elm$html$Html$Attributes$placeholder('Was möchtest du wissen?'),
-																	$elm$html$Html$Attributes$type_('text'),
-																	$elm$html$Html$Events$onInput(
-																	function (s) {
-																		return $author$project$Main$AskInput(s);
-																	})
-																]),
-															_List_Nil)
-														])),
-													function () {
-													if (maybeQuestion.$ === 'Nothing') {
-														return A2(
 															$elm$html$Html$div,
 															_List_fromArray(
 																[
-																	$elm$html$Html$Attributes$class('col-12 text-center'),
-																	A2($elm$html$Html$Attributes$style, 'height', '50vh')
+																	$elm$html$Html$Attributes$class('input-group w-75 mx-auto my-3 align-middle')
 																]),
 															_List_fromArray(
 																[
-																	$elm$html$Html$text('Bitte gib eine Frage ein')
-																]));
-													} else {
-														var question = maybeQuestion.a;
-														var url = 'https://schicksal.jokogr.de/question?q=' + A2($MartinSStewart$elm_serialize$Serialize$encodeToString, $MartinSStewart$elm_serialize$Serialize$string, question);
-														return A2(
-															$elm$html$Html$a,
-															_List_fromArray(
-																[
-																	$elm$html$Html$Attributes$href(url),
-																	$elm$html$Html$Attributes$class('bg-white col-12 text-center'),
-																	A2($elm$html$Html$Attributes$style, 'height', '50vh'),
-																	$elm$html$Html$Attributes$value(url)
-																]),
-															_List_fromArray(
-																[
-																	$elm$html$Html$text(url)
-																]));
-													}
-												}()
+																	A2(
+																	$elm$html$Html$input,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$Attributes$class('form-control'),
+																			$elm$html$Html$Attributes$placeholder('Was möchtest du wissen?'),
+																			$elm$html$Html$Attributes$type_('text'),
+																			$elm$html$Html$Events$onInput(
+																			function (s) {
+																				return $author$project$Main$AskInput(s);
+																			}),
+																			A2($elm$html$Html$Attributes$attribute, 'aria-describedby', 'basic-addon1')
+																		]),
+																	_List_Nil),
+																	A2(
+																	$elm$html$Html$button,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$Attributes$class('input-group-text'),
+																			$elm$html$Html$Attributes$id('basic-addon1'),
+																			function () {
+																			if (maybeQuestion.$ === 'Nothing') {
+																				return $elm$html$Html$Attributes$disabled(true);
+																			} else {
+																				var question = maybeQuestion.a;
+																				var url = 'https://schicksal.jokogr.de/question?q=' + A2($MartinSStewart$elm_serialize$Serialize$encodeToString, $MartinSStewart$elm_serialize$Serialize$string, question);
+																				return $elm$html$Html$Events$onClick(
+																					$author$project$Main$CopyToClipboard(url));
+																			}
+																		}()
+																		]),
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Link kopieren')
+																		]))
+																]))
+														]))
 												]))
 										]));
 							case 'Loading':

@@ -7652,7 +7652,7 @@ var $author$project$Main$view = function (model) {
 												$elm$html$Html$div,
 												_List_fromArray(
 													[
-														$elm$html$Html$Attributes$class('col-6 h-100 text-center bg-danger d-flex justify-content-center align-items-center display-5'),
+														$elm$html$Html$Attributes$class('col-12 h-50 text-center bg-danger d-flex justify-content-center align-items-center display-5'),
 														$elm$html$Html$Events$onClick($author$project$Main$RandomTime)
 													]),
 												_List_fromArray(
@@ -7663,7 +7663,7 @@ var $author$project$Main$view = function (model) {
 												$elm$html$Html$div,
 												_List_fromArray(
 													[
-														$elm$html$Html$Attributes$class('col-6 justify-content-center align-items-center text-center d-flex h-100 bg-secondary display-5'),
+														$elm$html$Html$Attributes$class('col-12 h-50 justify-content-center align-items-center text-center d-flex bg-secondary display-5'),
 														$elm$html$Html$Events$onClick($author$project$Main$Ask)
 													]),
 												_List_fromArray(

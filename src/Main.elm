@@ -149,12 +149,12 @@ view model =
                             div
                                 [ Html.Attributes.class "row vh-100" ]
                                 [ div
-                                    [ Html.Attributes.class "col-6 h-100 text-center bg-danger d-flex justify-content-center align-items-center display-5"
+                                    [ Html.Attributes.class "col-12 h-50 text-center bg-danger d-flex justify-content-center align-items-center display-5"
                                     , onClick RandomTime
                                     ]
                                     [ text "JA ODER NEIN?!" ]
                                 , div
-                                    [ Html.Attributes.class "col-6 justify-content-center align-items-center text-center d-flex h-100 bg-secondary display-5"
+                                    [ Html.Attributes.class "col-12 h-50 justify-content-center align-items-center text-center d-flex bg-secondary display-5"
                                     , onClick Ask
                                     ]
                                     [ text "EINE FRAGE BEANTWORTEN LASSEN" ]
